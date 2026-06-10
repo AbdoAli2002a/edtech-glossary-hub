@@ -47,6 +47,26 @@ function Index() {
   const [activeCat, setActiveCat] = useState<Category | "All">("All");
   const [sort, setSort] = useState<SortMode>("default");
   const [dark, setDark] = useState(false);
+  const [speakingId, setSpeakingId] = useState<number | null>(null);
+
+  // Stop any ongoing speech when leaving the page
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const handleSpeak = (t: Term) => {
+    if (speakingId === t.id) {
+      window.speechSynthesis.cancel();
+      setSpeakingId(null);
+      return;
+    }
+    setSpeakingId(t.id);
+    speakTerm(t, () => setSpeakingId((cur) => (cur === t.id ? null : cur)));
+  };
 
   // Init theme from system / localStorage
   useEffect(() => {
