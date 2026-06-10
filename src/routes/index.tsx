@@ -218,7 +218,22 @@ function Index() {
                   {t.term_ar}
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t.definition_en}</p>
-                <span className="mt-4 text-[11px] font-mono text-muted-foreground/70">#{t.id.toString().padStart(3, "0")}</span>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="text-[11px] font-mono text-muted-foreground/70">#{t.id.toString().padStart(3, "0")}</span>
+                  <button
+                    onClick={() => handleSpeak(t)}
+                    aria-label={speakingId === t.id ? "Stop audio" : "Listen to term and definition"}
+                    title={speakingId === t.id ? "إيقاف" : "استماع"}
+                    className={
+                      "inline-flex h-9 w-9 items-center justify-center rounded-full border transition " +
+                      (speakingId === t.id
+                        ? "border-transparent gradient-hero text-white shadow-glow animate-pulse"
+                        : "border-border bg-card text-foreground hover:border-primary hover:text-primary")
+                    }
+                  >
+                    {speakingId === t.id ? <Square className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                  </button>
+                </div>
               </article>
             ))}
           </div>
