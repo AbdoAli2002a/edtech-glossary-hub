@@ -1,7 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Moon, Sun, ArrowDownAZ, ArrowUpAZ, BookOpen, Sparkles } from "lucide-react";
-import { TERMS, CATEGORIES, type Category } from "@/data/terms";
+import { Search, Moon, Sun, ArrowDownAZ, ArrowUpAZ, BookOpen, Sparkles, Volume2, Square } from "lucide-react";
+import { TERMS, CATEGORIES, type Category, type Term } from "@/data/terms";
+
+// Speak a term + its definition using the browser's built-in SpeechSynthesis API.
+// Picks an Arabic voice for the Arabic term and an English voice for the English term + definition.
+function speakTerm(term: Term, onEnd: () => void) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const voices = window.speechSynthesis.getVoices();
+  const arVoice = voices.find((v) => v.lang?.toLowerCase().startsWith("ar"));
+  const enVoice = voices.find((v) => v.lang?.toLowerCase().startsWith("en"));
+
+  const uAr = new SpeechSynthesisUtterance(term.term_ar);
+  uAr.lang = "ar-SA";
+  if (arVoice) uAr.voice = arVoice;
+  uAr.rate = 0.95;
+
+  const uEn = new SpeechSynthesisUtterance(`${term.term_en}. ${term.definition_en}`);
+  uEn.lang = "en-US";
+  if (enVoice) uEn.voice = enVoice;
+  uEn.rate = 1;
+  uEn.onend = onEnd;
+  uEn.onerror = onEnd;
+
+  window.speechSynthesis.speak(uAr);
+  window.speechSynthesis.speak(uEn);
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -22,6 +47,26 @@ function Index() {
   const [activeCat, setActiveCat] = useState<Category | "All">("All");
   const [sort, setSort] = useState<SortMode>("default");
   const [dark, setDark] = useState(false);
+  const [speakingId, setSpeakingId] = useState<number | null>(null);
+
+  // Stop any ongoing speech when leaving the page
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const handleSpeak = (t: Term) => {
+    if (speakingId === t.id) {
+      window.speechSynthesis.cancel();
+      setSpeakingId(null);
+      return;
+    }
+    setSpeakingId(t.id);
+    speakTerm(t, () => setSpeakingId((cur) => (cur === t.id ? null : cur)));
+  };
 
   // Init theme from system / localStorage
   useEffect(() => {
@@ -173,7 +218,22 @@ function Index() {
                   {t.term_ar}
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t.definition_en}</p>
-                <span className="mt-4 text-[11px] font-mono text-muted-foreground/70">#{t.id.toString().padStart(3, "0")}</span>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="text-[11px] font-mono text-muted-foreground/70">#{t.id.toString().padStart(3, "0")}</span>
+                  <button
+                    onClick={() => handleSpeak(t)}
+                    aria-label={speakingId === t.id ? "Stop audio" : "Listen to term and definition"}
+                    title={speakingId === t.id ? "إيقاف" : "استماع"}
+                    className={
+                      "inline-flex h-9 w-9 items-center justify-center rounded-full border transition " +
+                      (speakingId === t.id
+                        ? "border-transparent gradient-hero text-white shadow-glow animate-pulse"
+                        : "border-border bg-card text-foreground hover:border-primary hover:text-primary")
+                    }
+                  >
+                    {speakingId === t.id ? <Square className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                  </button>
+                </div>
               </article>
             ))}
           </div>
