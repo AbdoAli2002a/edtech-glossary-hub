@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Moon, Sun, ArrowDownAZ, ArrowUpAZ, BookOpen, Sparkles, Volume2, Square } from "lucide-react";
+import { Search, Moon, Sun, ArrowDownAZ, ArrowUpAZ, BookOpen, Sparkles, Volume2, Square, FileText } from "lucide-react";
 import { TERMS, CATEGORIES, type Category, type Term } from "@/data/terms";
+import { ResearchPaperModal } from "@/components/ResearchPaperModal";
 
 // Speak a term + its definition using the browser's built-in SpeechSynthesis API.
 // Picks an Arabic voice for the Arabic term and an English voice for the English term + definition.
@@ -48,6 +49,7 @@ function Index() {
   const [sort, setSort] = useState<SortMode>("default");
   const [dark, setDark] = useState(false);
   const [speakingId, setSpeakingId] = useState<number | null>(null);
+  const [paperOpen, setPaperOpen] = useState(false);
 
   // Stop any ongoing speech when leaving the page
   useEffect(() => {
@@ -120,13 +122,24 @@ function Index() {
               </div>
               <span className="font-bold tracking-tight">EdTech Lexicon</span>
             </div>
-            <button
-              onClick={() => setDark((d) => !d)}
-              aria-label="Toggle dark mode"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-foreground transition hover:shadow-card"
-            >
-              {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPaperOpen(true)}
+                aria-label="Open research paper"
+                title="عرض الرسالة البحثية"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary"
+              >
+                <FileText className="h-4 w-4" />
+                <span className="hidden sm:inline">Research Paper</span>
+              </button>
+              <button
+                onClick={() => setDark((d) => !d)}
+                aria-label="Toggle dark mode"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-foreground transition hover:shadow-card"
+              >
+                {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
 
           <div className="mt-10 max-w-3xl">
@@ -246,6 +259,8 @@ function Index() {
           <code className="rounded bg-muted px-1.5 py-0.5">src/data/terms.ts</code>
         </div>
       </footer>
+
+      <ResearchPaperModal open={paperOpen} onClose={() => setPaperOpen(false)} />
     </div>
   );
 }
