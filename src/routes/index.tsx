@@ -122,13 +122,24 @@ function Index() {
               </div>
               <span className="font-bold tracking-tight">EdTech Lexicon</span>
             </div>
-            <button
-              onClick={() => setDark((d) => !d)}
-              aria-label="Toggle dark mode"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-foreground transition hover:shadow-card"
-            >
-              {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPaperOpen(true)}
+                aria-label="Open research paper"
+                title="عرض الرسالة البحثية"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary"
+              >
+                <FileText className="h-4 w-4" />
+                <span className="hidden sm:inline">Research Paper</span>
+              </button>
+              <button
+                onClick={() => setDark((d) => !d)}
+                aria-label="Toggle dark mode"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-foreground transition hover:shadow-card"
+              >
+                {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
 
           <div className="mt-10 max-w-3xl">
