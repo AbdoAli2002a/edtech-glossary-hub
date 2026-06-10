@@ -1,7 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Moon, Sun, ArrowDownAZ, ArrowUpAZ, BookOpen, Sparkles } from "lucide-react";
-import { TERMS, CATEGORIES, type Category } from "@/data/terms";
+import { Search, Moon, Sun, ArrowDownAZ, ArrowUpAZ, BookOpen, Sparkles, Volume2, Square } from "lucide-react";
+import { TERMS, CATEGORIES, type Category, type Term } from "@/data/terms";
+
+// Speak a term + its definition using the browser's built-in SpeechSynthesis API.
+// Picks an Arabic voice for the Arabic term and an English voice for the English term + definition.
+function speakTerm(term: Term, onEnd: () => void) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const voices = window.speechSynthesis.getVoices();
+  const arVoice = voices.find((v) => v.lang?.toLowerCase().startsWith("ar"));
+  const enVoice = voices.find((v) => v.lang?.toLowerCase().startsWith("en"));
+
+  const uAr = new SpeechSynthesisUtterance(term.term_ar);
+  uAr.lang = "ar-SA";
+  if (arVoice) uAr.voice = arVoice;
+  uAr.rate = 0.95;
+
+  const uEn = new SpeechSynthesisUtterance(`${term.term_en}. ${term.definition_en}`);
+  uEn.lang = "en-US";
+  if (enVoice) uEn.voice = enVoice;
+  uEn.rate = 1;
+  uEn.onend = onEnd;
+  uEn.onerror = onEnd;
+
+  window.speechSynthesis.speak(uAr);
+  window.speechSynthesis.speak(uEn);
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
