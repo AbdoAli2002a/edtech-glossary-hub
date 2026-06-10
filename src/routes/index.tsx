@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Moon, Sun, ArrowDownAZ, ArrowUpAZ, BookOpen, Sparkles, Volume2, Square, FileText } from "lucide-react";
+import { Search, Moon, Sun, ArrowDownAZ, ArrowUpAZ, BookOpen, Sparkles, Volume2, Square, FileText, Copy, Check } from "lucide-react";
 import { TERMS, CATEGORIES, type Category, type Term } from "@/data/terms";
 import { ResearchPaperModal } from "@/components/ResearchPaperModal";
 
@@ -50,6 +50,24 @@ function Index() {
   const [dark, setDark] = useState(false);
   const [speakingId, setSpeakingId] = useState<number | null>(null);
   const [paperOpen, setPaperOpen] = useState(false);
+  const [copiedId, setCopiedId] = useState<number | null>(null);
+
+  const handleCopy = async (t: Term) => {
+    const text = `${t.term_ar} — ${t.term_en}`;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // Fallback for older browsers / insecure contexts
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    setCopiedId(t.id);
+    setTimeout(() => setCopiedId((cur) => (cur === t.id ? null : cur)), 1500);
+  };
 
   // Stop any ongoing speech when leaving the page
   useEffect(() => {
@@ -233,19 +251,34 @@ function Index() {
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t.definition_en}</p>
                 <div className="mt-4 flex items-center justify-between">
                   <span className="text-[11px] font-mono text-muted-foreground/70">#{t.id.toString().padStart(3, "0")}</span>
-                  <button
-                    onClick={() => handleSpeak(t)}
-                    aria-label={speakingId === t.id ? "Stop audio" : "Listen to term and definition"}
-                    title={speakingId === t.id ? "إيقاف" : "استماع"}
-                    className={
-                      "inline-flex h-9 w-9 items-center justify-center rounded-full border transition " +
-                      (speakingId === t.id
-                        ? "border-transparent gradient-hero text-white shadow-glow animate-pulse"
-                        : "border-border bg-card text-foreground hover:border-primary hover:text-primary")
-                    }
-                  >
-                    {speakingId === t.id ? <Square className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleCopy(t)}
+                      aria-label={copiedId === t.id ? "Copied" : "Copy Arabic and English term"}
+                      title={copiedId === t.id ? "تم النسخ" : "نسخ المصطلح"}
+                      className={
+                        "inline-flex h-9 w-9 items-center justify-center rounded-full border transition " +
+                        (copiedId === t.id
+                          ? "border-transparent bg-primary text-primary-foreground"
+                          : "border-border bg-card text-foreground hover:border-primary hover:text-primary")
+                      }
+                    >
+                      {copiedId === t.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    </button>
+                    <button
+                      onClick={() => handleSpeak(t)}
+                      aria-label={speakingId === t.id ? "Stop audio" : "Listen to term and definition"}
+                      title={speakingId === t.id ? "إيقاف" : "استماع"}
+                      className={
+                        "inline-flex h-9 w-9 items-center justify-center rounded-full border transition " +
+                        (speakingId === t.id
+                          ? "border-transparent gradient-hero text-white shadow-glow animate-pulse"
+                          : "border-border bg-card text-foreground hover:border-primary hover:text-primary")
+                      }
+                    >
+                      {speakingId === t.id ? <Square className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
               </article>
             ))}
