@@ -259,6 +259,8 @@ function Index() {
           <code className="rounded bg-muted px-1.5 py-0.5">src/data/terms.ts</code>
         </div>
       </footer>
+
+      <ResearchPaperModal open={paperOpen} onClose={() => setPaperOpen(false)} />
     </div>
   );
 }
