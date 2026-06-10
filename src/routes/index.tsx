@@ -251,19 +251,34 @@ function Index() {
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t.definition_en}</p>
                 <div className="mt-4 flex items-center justify-between">
                   <span className="text-[11px] font-mono text-muted-foreground/70">#{t.id.toString().padStart(3, "0")}</span>
-                  <button
-                    onClick={() => handleSpeak(t)}
-                    aria-label={speakingId === t.id ? "Stop audio" : "Listen to term and definition"}
-                    title={speakingId === t.id ? "إيقاف" : "استماع"}
-                    className={
-                      "inline-flex h-9 w-9 items-center justify-center rounded-full border transition " +
-                      (speakingId === t.id
-                        ? "border-transparent gradient-hero text-white shadow-glow animate-pulse"
-                        : "border-border bg-card text-foreground hover:border-primary hover:text-primary")
-                    }
-                  >
-                    {speakingId === t.id ? <Square className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleCopy(t)}
+                      aria-label={copiedId === t.id ? "Copied" : "Copy Arabic and English term"}
+                      title={copiedId === t.id ? "تم النسخ" : "نسخ المصطلح"}
+                      className={
+                        "inline-flex h-9 w-9 items-center justify-center rounded-full border transition " +
+                        (copiedId === t.id
+                          ? "border-transparent bg-primary text-primary-foreground"
+                          : "border-border bg-card text-foreground hover:border-primary hover:text-primary")
+                      }
+                    >
+                      {copiedId === t.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    </button>
+                    <button
+                      onClick={() => handleSpeak(t)}
+                      aria-label={speakingId === t.id ? "Stop audio" : "Listen to term and definition"}
+                      title={speakingId === t.id ? "إيقاف" : "استماع"}
+                      className={
+                        "inline-flex h-9 w-9 items-center justify-center rounded-full border transition " +
+                        (speakingId === t.id
+                          ? "border-transparent gradient-hero text-white shadow-glow animate-pulse"
+                          : "border-border bg-card text-foreground hover:border-primary hover:text-primary")
+                      }
+                    >
+                      {speakingId === t.id ? <Square className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
               </article>
             ))}
