@@ -50,6 +50,24 @@ function Index() {
   const [dark, setDark] = useState(false);
   const [speakingId, setSpeakingId] = useState<number | null>(null);
   const [paperOpen, setPaperOpen] = useState(false);
+  const [copiedId, setCopiedId] = useState<number | null>(null);
+
+  const handleCopy = async (t: Term) => {
+    const text = `${t.term_ar} — ${t.term_en}`;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // Fallback for older browsers / insecure contexts
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    setCopiedId(t.id);
+    setTimeout(() => setCopiedId((cur) => (cur === t.id ? null : cur)), 1500);
+  };
 
   // Stop any ongoing speech when leaving the page
   useEffect(() => {
