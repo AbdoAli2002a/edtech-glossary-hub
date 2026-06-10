@@ -49,6 +49,7 @@ function Index() {
   const [sort, setSort] = useState<SortMode>("default");
   const [dark, setDark] = useState(false);
   const [speakingId, setSpeakingId] = useState<number | null>(null);
+  const [paperOpen, setPaperOpen] = useState(false);
 
   // Stop any ongoing speech when leaving the page
   useEffect(() => {
