@@ -118,7 +118,15 @@ export function ResearchPaperModal({ open, onClose }: Props) {
         </div>
 
         {/* Body */}
-        <div className="px-5 py-6 sm:px-10 sm:py-10">
+        <ResearchPaperBody />
+      </div>
+    </div>
+  );
+}
+
+export function ResearchPaperBody() {
+  return (
+    <div className="px-5 py-6 sm:px-10 sm:py-10">
           {/* Title block */}
           <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-primary/10 via-transparent to-primary/5 p-6 sm:p-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground">
@@ -278,8 +286,6 @@ export function ResearchPaperModal({ open, onClose }: Props) {
             © {new Date().getFullYear()} · Educational Technology Research · Minia University
           </div>
         </div>
-      </div>
-    </div>
   );
 }
 
