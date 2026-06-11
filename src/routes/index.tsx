@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Search, Moon, Sun, ArrowDownAZ, ArrowUpAZ, BookOpen, Sparkles, Volume2, Square, FileText, Copy, Check } from "lucide-react";
 import { TERMS, CATEGORIES, type Category, type Term } from "@/data/terms";
-import { ResearchPaperModal } from "@/components/ResearchPaperModal";
+import { ResearchPaperModal, ResearchPaperBody } from "@/components/ResearchPaperModal";
 
 // Speak a term + its definition using the browser's built-in SpeechSynthesis API.
 // Picks an Arabic voice for the Arabic term and an English voice for the English term + definition.
