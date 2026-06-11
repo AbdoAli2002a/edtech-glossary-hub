@@ -286,6 +286,14 @@ function Index() {
         )}
       </main>
 
+      {/* Full research paper inline (same formatting as the modal) */}
+      <section className="border-t border-border bg-muted/20">
+        <div className="mx-auto max-w-4xl">
+          <ResearchPaperBody />
+        </div>
+      </section>
+
+
       <footer className="border-t border-border py-8">
         <div className="mx-auto max-w-6xl px-4 text-center text-xs text-muted-foreground">
           Built for educators & instructional designers · Add new terms in{" "}
