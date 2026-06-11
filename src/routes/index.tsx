@@ -138,7 +138,7 @@ function Index() {
               <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-hero text-white shadow-glow">
                 <BookOpen className="h-5 w-5" />
               </div>
-              <span className="font-bold tracking-tight">EdTech Lexicon</span>
+              <span className="font-bold tracking-tight">د/ ايمان الشريف</span>
             </div>
             <div className="flex items-center gap-2">
               <button
